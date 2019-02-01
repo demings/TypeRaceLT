@@ -25,12 +25,9 @@ class GivenTextComp extends React.Component{
       typedText: '',
       correctText: '',
       errorText: '',
-      uncompletedText: ''
+      uncompletedText: '',
+      wikiURL: ''
     };
-    
-    
-    // this.findtext = this.findtext.bind(this);
-    //this.getJSONP = this.getJSONP.bind(this);
     
     this.findtext();
     this.setStrings = this.setStrings.bind(this);
@@ -38,18 +35,19 @@ class GivenTextComp extends React.Component{
 
   async findtext(){
     try {
-      let randomResponse = await fetch('https://en.wikipedia.org/api/rest_v1/page/random/title');
+      let randomResponse = await fetch('https://lt.wikipedia.org/api/rest_v1/page/random/title');
       let randomResponseJson = await randomResponse.json();
       var randomTitle = randomResponseJson.items[0].title;
       console.log(randomTitle);
 
 
-      let response = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + randomTitle);
+      let response = await fetch('https://lt.wikipedia.org/api/rest_v1/page/summary/' + randomTitle);
       let responseJson = await response.json();
 
-
-      this.setState({givenText: responseJson.extract});
-      this.setState({uncompletedText: responseJson.extract});
+      var formatedText = responseJson.extract.replace(/&nbsp;/g, " ").replace('–', "-");
+      this.setState({givenText: formatedText});
+      this.setState({uncompletedText: formatedText});
+      this.setState({wikiURL: 'https://lt.wikipedia.org/wiki/' + randomTitle})
      } catch(error) {
       console.error(error);
     }
@@ -102,6 +100,12 @@ class GivenTextComp extends React.Component{
         </div>
 
         <TypingForm onSetStrings={this.setStrings}/>
+
+        <a href={this.state.wikiURL} class="text-muted">
+          <font size="2">
+            {this.state.wikiURL}
+          </font>
+        </a>
       </div>
     );
   }
