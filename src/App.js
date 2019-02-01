@@ -37,13 +37,17 @@ class GivenTextComp extends React.Component{
   }
 
   async findtext(){
-    // http://www.pipedija.com/index.php/Specialus:Atsitiktinis_puslapis
-    // https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=Stack%20Overflow
-
-    // https://en.wikipedia.org/api/rest_v1/page/summary/Stack_Overflow
     try {
-      let response = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/Stack_Overflow');
+      let randomResponse = await fetch('https://en.wikipedia.org/api/rest_v1/page/random/title');
+      let randomResponseJson = await randomResponse.json();
+      var randomTitle = randomResponseJson.items[0].title;
+      console.log(randomTitle);
+
+
+      let response = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + randomTitle);
       let responseJson = await response.json();
+
+
       this.setState({givenText: responseJson.extract});
       this.setState({uncompletedText: responseJson.extract});
      } catch(error) {
