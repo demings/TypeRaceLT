@@ -8,8 +8,6 @@ class App extends Component {
         <header className="App-header">
           <h1>Rašymo lenktynės</h1>
 
-          {/* <TypingForm /> */}
-
           <GivenTextComp />
 
         </header>
@@ -23,29 +21,40 @@ class GivenTextComp extends React.Component{
     super(props);
 
     this.state = {
-      givenText: 'Duotas Tekstas',
+      givenText: '',
       typedText: '',
       correctText: '',
       errorText: '',
-      uncompletedText: 'Duotas Tekstas'
+      uncompletedText: ''
     };
-
-
     
-    // this.handleChange = this.handleChange.bind(this);
+    
+    // this.findtext = this.findtext.bind(this);
+    //this.getJSONP = this.getJSONP.bind(this);
+    
+    this.findtext();
     this.setStrings = this.setStrings.bind(this);
   }
 
-  findtext(){
-    // {this.props.writtenText}
+  async findtext(){
+    // http://www.pipedija.com/index.php/Specialus:Atsitiktinis_puslapis
+    // https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=Stack%20Overflow
+
+    // https://en.wikipedia.org/api/rest_v1/page/summary/Stack_Overflow
+    try {
+      let response = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/Stack_Overflow');
+      let responseJson = await response.json();
+      this.setState({givenText: responseJson.extract});
+      this.setState({uncompletedText: responseJson.extract});
+     } catch(error) {
+      console.error(error);
+    }
   }
 
   setStrings(typedValue){
-    // alert("set strings " + typedValue);
     this.setState({typedText: typedValue})
     var typedChars = typedValue.split('');
     var givenChars = this.state.givenText.split('');
-    // var givenChars = this.state.givenText;
     var correctChars = [];
     var incorrectChars = [];
     var uncompletedChars = [];
@@ -73,8 +82,6 @@ class GivenTextComp extends React.Component{
   }
 
   render(){
-
-
     return(
       <div class="form-group col-lg-4">
 
@@ -87,7 +94,6 @@ class GivenTextComp extends React.Component{
           </text>
           <text class="text-primary">
             {this.state.uncompletedText}
-            {/* {this.state.typedText} */}
           </text>
         </div>
 
