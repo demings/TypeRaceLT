@@ -44,7 +44,29 @@ class GivenTextComp extends React.Component{
       let response = await fetch('https://lt.wikipedia.org/api/rest_v1/page/summary/' + randomTitle);
       let responseJson = await response.json();
 
-      var formatedText = responseJson.extract.replace(/&nbsp;/g, " ").replace('–', "-");
+      var text = '';
+      text = responseJson.extract.toString();
+      var formatedText = responseJson.extract.split("").join("").replace("/\s/g", " ").replace('–', "-");
+
+      var charArray = responseJson.extract.split("");
+      var newArray = [];
+
+      charArray.forEach(char => {
+        if(char === /\s/){
+          newArray.push(" ");
+        }else{
+          newArray.push(char);
+        }
+      });
+
+      // for(var i = 0; i < responseJson.extract.split("").length; i++){
+      //   if()
+      // }
+      
+      // console.log(charArray);
+      formatedText = newArray.join("");
+      console.log(text);
+      console.log(formatedText);
       this.setState({givenText: formatedText});
       this.setState({uncompletedText: formatedText});
       this.setState({wikiURL: 'https://lt.wikipedia.org/wiki/' + randomTitle})
@@ -100,8 +122,7 @@ class GivenTextComp extends React.Component{
         </div>
 
         <TypingForm onSetStrings={this.setStrings}/>
-
-        <a href={this.state.wikiURL} class="text-muted">
+        <a href={this.state.wikiURL} class="text-muted"  target="_blank" >
           <font size="2">
             {this.state.wikiURL}
           </font>
